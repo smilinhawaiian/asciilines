@@ -6,9 +6,8 @@ shama2@pdx.edu
 ## Explanation of what the program is and does
 HW 1: Make a mini-project
 This is the Mini-Project: HW1 for CS461P-Open Software Development 
-This program is written in [XX Language]
+This program is written in python
 This program that will accept a single .tvg file argument and render the file as ASCII on standard output.
-The program should fail on invalid input, but may panic or otherwise display an error in this case.
 The program outputs one of specifications of the tvg file as ASCII on stdout.
 
 
@@ -51,14 +50,14 @@ should render as:
 
 ## Build and Run
 
-Build and Run this program and library with `buildandruncommandhere` 
+Build and Run this program and with `insertbuildandruncommandhere` 
 passing in a tvg file as the program argument
 for example:
 
 python3 asciilines.py tests/test1.tvg
 
 
-Here is an example session. The lines beginning with $ were typed by me: the other lines are program output.
+Here is an example session. The lines beginning with $ were typed by Bart Massey: the other lines are program output.
 
     $ cat tests/test1.tvg 
     3 4
@@ -70,9 +69,12 @@ Here is an example session. The lines beginning with $ were typed by me: the oth
     .#..
     $ 
 
+
 ## Bugs, Defects, Failing Tests, etc
 
 Bugs, Defects, and Failing Test information goes here as needed.
+The program fails on invalid input, but may panic or otherwise display an error in this case.
+
 
 ## License
 
