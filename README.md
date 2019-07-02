@@ -37,16 +37,18 @@ There is no wraparound: only points inside the canvas should be rendered, others
 
 A rendering output is produced by executing each of the rendering commands on the canvas. 
 For example, a TVG file containing:
-/**
-   3 4
-   * 1 -1 h 5
-   # -1 1 v 5
-**/
 
-should render as
+
+   3 4
+   \* 1 -1 h 5
+   \# -1 1 v 5
+
+should render as:
 
    .#..
+
    \*#**
+
     .#..
 
 
