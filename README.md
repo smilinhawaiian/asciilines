@@ -82,6 +82,9 @@ This program is licensed under the "MIT License".  Please
 see the file `LICENSE` in the source distribution of this
 software for license terms.
 
+## Acknowledgments
+Thanks to professor Bart Massey for much of the underlying README information and project guidance.
+Thanks to classmate Eliot Woodrich for letting me borrow his python as an example in another lamguage.
 
 
 # TODO!-------------------------------------
