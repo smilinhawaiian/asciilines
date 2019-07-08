@@ -3,6 +3,8 @@
 // Please see the file LICENSE in the source
 // distribution of this software for license terms.
 
+use std::fmt::Write;
+
 ///! Functions to help render a .tvg file 
 ///! on standard output
 
@@ -25,61 +27,62 @@ pub type AsciiFn = fn(&[String]) -> Option<String>;
 /// # use asciilines::*;
 /// assert_eq!(Some("0 0".to_string()), draw_canvas(&[String::from("0 0")]));
 /// ```
-pub fn draw_canvas(nums: &[String]) -> Option<String> {
+pub fn draw_canvas(dims: &[String]) -> Option<String> {
     println!("\n\tfunction::draw_canvas called... \n");
     // get the canvas size
-    let mut nums = nums.to_owned();
+    //let mut dims = dims.to_owned();
     let mut pos = 0;
     let mut coord = 0;
     let mut xdim: u32 = 0;
     let mut ydim: u32 = 0;
-    let mut v = String::new();
+    let mut xydims = String::new();
+    //let mut v = String::new();
     let mut canvas = String::new();
-    let count = nums.len();  //println!("nums.len() = {}", count); //println!("Printing nums: \n{:?}", nums);
-    if count != 0 {
-        for num in &nums[..] {   //println!("  {}", num); 
-            v = num.to_string().chars().collect();
+    //------
+    //let count = dims.len();  //println!("nums.len() = {}", count); //println!("Printing nums: \n{:?}", nums);
+    //if dims.len() != 0 {
+    //    for dim in &dims[..] {   //println!("  {}", num); 
+    //        v = dim.to_string().chars().collect();
+    //    }
+    //} else {
+    //    canvas.insert_str(pos, "CANVAS COULDNT BE DRAWN");
+    //}
+
+    //println!("\n\tfor val in v.chars()... \n");
+    //for val in v.chars() {
+    //    match pos {
+    //        0 => {xdim = val.to_digit(16).unwrap(); pos+=1},
+    //        2 => {ydim = val.to_digit(16).unwrap(); pos+=1},
+    //        _ => {println!("{}", val); pos+=1},
+    //    }
+    //}
+    //---------------new stuff to replace above junk
+    if dims.len() != 0 {
+        xydims = get_dims(&dims).unwrap();
+        for dim in xydims.lines() {  //println!("dim = {}", dim);
+            match pos {
+                0 => {xdim = dim.parse().unwrap(); pos+=1},
+                1 => {ydim = dim.parse().unwrap(); pos+=1},
+                _ => {pos+=1},
+            }
         }
-    } else {
-        v.insert_str(pos, "CANVAS COULDNT BE DRAWN");
+        println!("!!!!get_dims put into xydims: \n{}", xydims);
     }
 
-    println!("\n\tfor val in v.chars()... \n");
-    //let vlen = v.len();  //  println!("vlen= {}", vlen);
-    for val in v.chars() {
-        match pos {
-            0 => {xdim = val.to_digit(16).unwrap(); pos+=1},
-            2 => {ydim = val.to_digit(16).unwrap(); pos+=1},
-            _ => {println!("{}", val); pos+=1},
-        }
-    }
 
+    // ----- 
     let mut curr_str = String::new();
-    println!("\n\tfor x in xdim... \n");
-    for x in 0..xdim { //build row
-        println!("\nx = {}", x);
+    for x in 0..xdim { //build row  //println!("\nx = {}", x);
         curr_str = "".to_string();
-        println!("\n\tfor y in ydim... \n");
-        for y in 0..ydim{ // build column
-            println!("\ny = {}", y);
-            //canvas.insert_str(coord, ".");
-            //curr_str.insert_str(coord, ".");
+        for y in 0..ydim{ // build column // println!("\ny = {}", y);
             curr_str = curr_str + ".";
             coord +=1;
         }
-        //canvas.insert_str(coord, "\r");
-        //canvas.insert_str(coord, "\n");
-        use std::fmt::Write;
+        //use std::fmt::Write;
         writeln!(&mut canvas, "{}", curr_str).unwrap();
-        //canvas = writeln!(&mut canvas, "{}", curr_str).unwrap();
         coord+=1;
-    }
-    //println!("xdim = {}", xdim);
-    //println!("ydim = {}", ydim);
-    //println!("pos = {}", pos);
-    //println!("\n\tdraw_returning {:?} \n", v);
-    //Some(v)
-    println!("\nPrinting CANVAS: \n{}\n", canvas);
+    }  //println!("xdim = {}", xdim); //println!("ydim = {}", ydim); //println!("pos = {}", pos);
+    //println!("\nPrinting CANVAS: \n{}\n", canvas);
     Some(canvas)
 }
 
@@ -94,41 +97,51 @@ pub fn draw_canvas(nums: &[String]) -> Option<String> {
 //}
 
 // assert_eq!(None, funct2(&[]));
-/// Population standard deviation of input values. The
-/// standard deviation of an empty list is undefined.
+/// Adds characters to canvas as given by tvg file.
+/// char rowstart colstart direction length
 ///
 /// # Examples:
 ///
 /// ```
 /// # use asciilines::*;
-/// assert_eq!(Some("5 6".to_string()), funct2(&[String::from("5 6")])); 
+/// assert_eq!(Some("* 5 6 h 2".to_string()), add_to_canvas(&[String::from("* 5 6 h 2")])); 
 /// ```
 /// ```
 /// # use asciilines::*;
-/// assert_eq!(Some("5 6 7".to_string()), funct2(&[String::from("5 6 7")]));
+/// assert_eq!(Some("# 5 6 v 1".to_string()), add_to_canvas(&[String::from("# 5 6 v 1")]));
 /// ```
-pub fn funct2(nums: &[String]) -> Option<String> {
-    println!("\n\tfunction::funct2 called... \n");
-    //let mut sigma = 0.0;
+pub fn add_to_canvas(args: &[String]) -> Option<String> {
+    println!("\n\tfunction::add_to_canvas called... \n");
+    println!("Printing passed in args: \n {:?} \n", args);
+    //get dims
+    let args = args.to_owned();
+    let mut dims = String::new();
     let mut chars = String::new();
-    //let xbar = funct1(nums).unwrap() as f64; //no error since mean will be Some
     let mut position = 0;
-    if !nums.is_empty() {
-        for val in &nums[..] {
-            chars.insert_str(position, val);
-            position += val.len();
-    //        let temp = (val - xbar).powf(2.0);
-            //chars.push(val.as_bytes());
-    //        sigma = funct1(&sqnums[..]).unwrap().sqrt() as f64;
+    let mut count = 0;
+    if !args.is_empty() {
+        for arg in &args[..] {
+            for line in arg.lines() {
+                //println!("line = \n{}", line);
+                match count {
+                    0 => {dims = get_dims(&[line.to_string()]).unwrap(); count+=1},
+                    _ => {println!("line{}:{}\n", count, line); count +=1},
+                }
+            }
         }
-    //    Some(sigma)
     } else {
         chars = "Passed in values empty in function 2".to_string();
     }
-    //Some("Function 2 returning".to_string())
+    //println!("dims = \n{}", dims);
+    println!("\tadd funct returning: \n{}", chars);
     Some(chars)
 }
 
+            //for val in &args[..] {
+            //    chars.insert_str(position, val);
+            //    position += val.len();
+            //}
+            
 //#[test]
 //fn test_funct2_97() {
 //    assert_eq!(
@@ -144,36 +157,50 @@ pub fn funct2(nums: &[String]) -> Option<String> {
 
 // assert_eq!(None, funct3(&[]));
 // assert_eq!(Some(0.0), funct3(&[0.0, 0.5, -1.0, 1.0]));
-/// Median value of input values, taking the value closer
-/// to the beginning to break ties. The median
-/// of an empty list is undefined.
+/// Parse and return the canvas dimensions specified by the tvg file
+/// rows cols
 ///
 /// # Examples:
 ///
 /// ```
 /// # use asciilines::*;
-/// assert_eq!(Some("5 6".to_string()), funct3(&[String::from("5 6")]));
+/// assert_eq!(Some("5 6".to_string()), get_dims(&[String::from("5 6")]));
 /// ```
 /// ```
 /// # use asciilines::*;
-/// assert_eq!(Some("".to_string()), funct3(&[String::from("")]));
+/// assert_eq!(Some("".to_string()), get_dims(&[String::from("")]));
 /// ```
-pub fn funct3(nums: &[String]) -> Option<String> {
-    println!("\n\tfunction::funct3 called... \n");
-    // Make a sorted copy of the input floats.
-    let mut nums = nums.to_owned();
-    println!("{:?}", nums);
-    // https://users.rust-lang.org/t/how-to-sort-a-vec-of-floats/2838/2
-//    nums.sort_by(|a, b| a.partial_cmp(b).unwrap());
-//    let mut index = nums.len();
-//    if index != 0 {
-//        index = (index - 1) / 2;
-//        let med = nums[index];
-//        Some(med)
-//    } else {
-//        None
-//    }
-    Some("Function 3 returning".to_string())
+pub fn get_dims(dims: &[String]) -> Option<String> {
+    println!("\n\tfunction::get_dims called... \n");
+    let mut dims = dims.to_owned();
+    let mut pos = 0;
+    let mut coord = 0;
+    let mut xydims = String::new();
+    let mut v = String::new();
+    let mut canvas = String::new();
+
+    if dims.len() != 0 {
+        for dim in &dims[..] {   //println!("  {}", num); 
+            v = dim.to_string().chars().collect();
+        }
+    } else {
+        xydims = "".to_string();
+    }
+    //println!("\n\tfor val in v.chars()... \n");
+    for val in v.chars() {
+        //println!("val= {}", val);
+        match pos {
+            //0 => {let xdim = val.to_string(); xydims = xydims + &xdim; pos+=1},
+            //0 => {writeln!(&mut xydims, "{}", &val.to_string()).unwrap(); pos+=1},
+            //);let xdim = val.to_string(); xydims = xydims + &xdim; pos+=1},
+            0 => {let xdim = &(val.to_string()); writeln!(&mut xydims, "{}", xdim); pos+=1},
+            2 => {let ydim = &(val.to_string()); writeln!(&mut xydims, "{}", ydim); pos+=1},
+            //2 => {let ydim = val.to_string(); xydims = xydims + &ydim; pos+=1},
+            _ => {println!("{}", val); pos+=1},
+        }
+    }
+    println!("Returning xydims values: \n{}", xydims);
+    Some(xydims)
 }
 
 //#[test]

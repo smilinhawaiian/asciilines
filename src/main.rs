@@ -17,7 +17,7 @@ use std::error::Error;
 
 /// Report proper usage and exit.
 fn usage() -> ! {
-    eprintln!("asciilines: usage: asciilines [--funct1|--funct2|--funct3|--funct4]");
+    eprintln!("asciilines: usage: asciilines [--canvas|--add_to_canvas|--funct3|--funct4]");
     exit(1);
 }
 
@@ -33,8 +33,8 @@ fn main() {
     println!("\nThe filename that was read in is:\n{}", filename); // for testing
     let argdescs: &[(&str, asciilines::AsciiFn)] = &[
         ("--canvas", asciilines::draw_canvas),
-        ("--funct2", asciilines::funct2),
-        ("--funct3", asciilines::funct3),
+        ("--add_to_canvas", asciilines::add_to_canvas),
+        ("--get_dims", asciilines::get_dims),
         ("--funct4", asciilines::funct4),
     ];
 
@@ -70,33 +70,39 @@ fn main() {
 
     // iterate over each slice of the file to pass into functions
     // to do stuff
+    let mut dims = String::new();
+    let mut canvas = String::new();
     let mut count = 0;
     for line in contents.lines() {
-        println!("line {}: {}", count, line);
+        println!("line {}: \n{}", count, line);
         let nline: &[String] = &[line.to_string()];
-        if count == 0 { // canvas parameters
-            println!("canvas parameters here");
+        if count == 0 { // canvas parameters // println!("canvas parameters here");
+            dims = line.to_string(); // println!("dims: {}", dims);
+            let dims = &dims;
             let canvas: &mut String = &mut asciilines::draw_canvas(nline).unwrap();
             //println!("\ncanvas= {:?}\n", canvas);
             match outfile.write_all(&canvas.as_bytes()) {
                 Err(why) => panic!("couldn't write to {}: {}", display, why.description()),
-                Ok(_) => println!("successful write to {}\n", display),
+                Ok(_) => println!(""), // println!("successful write to {}\n", display),
             } 
-            println!("\nPRINTING RETURNED CANVAS:");
+            println!("\nPRINTING RETURNED CANVAS:\n");
             let str_canvas = &canvas[..];
             //for cline in canvas.lines() {
             for cline in str_canvas.lines() {
                 println!("{}", cline)
             }
-
-            println!("\n");
-            //println!("canvas:: {:?}", canvas);
-            //println!("canvas:: {:?}", canvas.lines());
-            //let mut rendering = argit.find(|(a, _)| a == nline);
         } else {    // render command
-            println!("rendering to be done here \n");
+            //println!("rendering to be done here \n");
+            //println!("\nnline= {:?}\n", nline);
+            let mut mline = String::new();
+            use std::fmt::Write;
+            writeln!(&mut mline, "{}", dims).unwrap();
+            mline = mline + line;
+            let canvas: &mut String = &mut asciilines::add_to_canvas(&[mline.to_string()]).unwrap();
+            //println!("\ncanvas= {:?}\n", canvas);
         }
         count+=1;
+        println!("\n");
     }
 
 
