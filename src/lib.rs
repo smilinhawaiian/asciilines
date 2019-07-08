@@ -30,25 +30,40 @@ pub fn draw_canvas(nums: &[String]) -> Option<String> {
     // get the canvas size
     let mut nums = nums.to_owned();
     let mut pos = 0;
-    let mut xdim = 0;
+    let mut xdim: u32 = 0;
     let mut ydim = 0;
     let mut v = String::new();
     let count = nums.len();
-    let mut line = &nums[0];
-    println!("nums.len() = {}", count);
-    println!("Printing nums: \n{:?}", nums);
+    //println!("nums.len() = {}", count);
+    //println!("Printing nums: \n{:?}", nums);
     if count != 0 {
-        for num in &nums[..] {
-            println!("  {}", num);
-            //let s: String = num.to_string(); //works
-            v = num.to_string();
-            pos +=1;
-            println!("pos: {}", pos);
+        for num in &nums[..] {   //println!("  {}", num); 
+            v = num.to_string().chars().collect();
         }
     } else {
         v.insert_str(pos, "CANVAS COULDNT BE DRAWN");
     }
 
+    let vlen = v.len();  //  println!("vlen= {}", vlen);
+    for val in v.chars() {
+        match pos {
+            0 => {xdim = val.to_digit(16).unwrap(); pos+=1},
+            2 => {ydim = val.to_digit(16).unwrap(); pos+=1},
+            _ => {println!("{}", val); pos+=1},
+        }
+    }
+    //if vlen == 3 {
+        //let vbytes = v.chars();
+    //    xdim = v;
+    //    println!("xdim = {}", xdim);
+        //xdim = v[0];
+        //ydim = v[2];
+    //}
+    //for val in v.chars() {  //  println!("val: {}", val);
+    //}
+    println!("xdim = {}", xdim);
+    println!("ydim = {}", ydim);
+    println!("pos = {}", pos);
     println!("\n\tdraw_returning {:?} \n", v);
     Some(v)
 }
