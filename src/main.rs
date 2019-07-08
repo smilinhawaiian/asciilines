@@ -82,6 +82,16 @@ fn main() {
                 Err(why) => panic!("couldn't write to {}: {}", display, why.description()),
                 Ok(_) => println!("successful write to {}\n", display),
             } 
+            println!("\nPRINTING RETURNED CANVAS:");
+            let str_canvas = &canvas[..];
+            //for cline in canvas.lines() {
+            for cline in str_canvas.lines() {
+                println!("{}", cline)
+            }
+
+            println!("\n");
+            //println!("canvas:: {:?}", canvas);
+            //println!("canvas:: {:?}", canvas.lines());
             //let mut rendering = argit.find(|(a, _)| a == nline);
         } else {    // render command
             println!("rendering to be done here \n");

@@ -30,12 +30,12 @@ pub fn draw_canvas(nums: &[String]) -> Option<String> {
     // get the canvas size
     let mut nums = nums.to_owned();
     let mut pos = 0;
+    let mut coord = 0;
     let mut xdim: u32 = 0;
-    let mut ydim = 0;
+    let mut ydim: u32 = 0;
     let mut v = String::new();
-    let count = nums.len();
-    //println!("nums.len() = {}", count);
-    //println!("Printing nums: \n{:?}", nums);
+    let mut canvas = String::new();
+    let count = nums.len();  //println!("nums.len() = {}", count); //println!("Printing nums: \n{:?}", nums);
     if count != 0 {
         for num in &nums[..] {   //println!("  {}", num); 
             v = num.to_string().chars().collect();
@@ -44,7 +44,8 @@ pub fn draw_canvas(nums: &[String]) -> Option<String> {
         v.insert_str(pos, "CANVAS COULDNT BE DRAWN");
     }
 
-    let vlen = v.len();  //  println!("vlen= {}", vlen);
+    println!("\n\tfor val in v.chars()... \n");
+    //let vlen = v.len();  //  println!("vlen= {}", vlen);
     for val in v.chars() {
         match pos {
             0 => {xdim = val.to_digit(16).unwrap(); pos+=1},
@@ -52,20 +53,34 @@ pub fn draw_canvas(nums: &[String]) -> Option<String> {
             _ => {println!("{}", val); pos+=1},
         }
     }
-    //if vlen == 3 {
-        //let vbytes = v.chars();
-    //    xdim = v;
-    //    println!("xdim = {}", xdim);
-        //xdim = v[0];
-        //ydim = v[2];
-    //}
-    //for val in v.chars() {  //  println!("val: {}", val);
-    //}
-    println!("xdim = {}", xdim);
-    println!("ydim = {}", ydim);
-    println!("pos = {}", pos);
-    println!("\n\tdraw_returning {:?} \n", v);
-    Some(v)
+
+    let mut curr_str = String::new();
+    println!("\n\tfor x in xdim... \n");
+    for x in 0..xdim { //build row
+        println!("\nx = {}", x);
+        curr_str = "".to_string();
+        println!("\n\tfor y in ydim... \n");
+        for y in 0..ydim{ // build column
+            println!("\ny = {}", y);
+            //canvas.insert_str(coord, ".");
+            //curr_str.insert_str(coord, ".");
+            curr_str = curr_str + ".";
+            coord +=1;
+        }
+        //canvas.insert_str(coord, "\r");
+        //canvas.insert_str(coord, "\n");
+        use std::fmt::Write;
+        writeln!(&mut canvas, "{}", curr_str).unwrap();
+        //canvas = writeln!(&mut canvas, "{}", curr_str).unwrap();
+        coord+=1;
+    }
+    //println!("xdim = {}", xdim);
+    //println!("ydim = {}", ydim);
+    //println!("pos = {}", pos);
+    //println!("\n\tdraw_returning {:?} \n", v);
+    //Some(v)
+    println!("\nPrinting CANVAS: \n{}\n", canvas);
+    Some(canvas)
 }
 
 //#[test]
