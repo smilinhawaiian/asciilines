@@ -30,59 +30,29 @@ pub type AsciiFn = fn(&[String]) -> Option<String>;
 pub fn draw_canvas(dims: &[String]) -> Option<String> {
     println!("\n\tfunction::draw_canvas called... \n");
     // get the canvas size
-    //let mut dims = dims.to_owned();
-    let mut pos = 0;
     let mut coord = 0;
-    let mut xdim: u32 = 0;
-    let mut ydim: u32 = 0;
-    let mut xydims = String::new();
-    //let mut v = String::new();
+    let mut xydims: Vec<u32> = Vec::new();
     let mut canvas = String::new();
-    //------
-    //let count = dims.len();  //println!("nums.len() = {}", count); //println!("Printing nums: \n{:?}", nums);
-    //if dims.len() != 0 {
-    //    for dim in &dims[..] {   //println!("  {}", num); 
-    //        v = dim.to_string().chars().collect();
-    //    }
-    //} else {
-    //    canvas.insert_str(pos, "CANVAS COULDNT BE DRAWN");
-    //}
-
-    //println!("\n\tfor val in v.chars()... \n");
-    //for val in v.chars() {
-    //    match pos {
-    //        0 => {xdim = val.to_digit(16).unwrap(); pos+=1},
-    //        2 => {ydim = val.to_digit(16).unwrap(); pos+=1},
-    //        _ => {println!("{}", val); pos+=1},
-    //    }
-    //}
-    //---------------new stuff to replace above junk
+    // get dimentions for canvas
     if dims.len() != 0 {
-        xydims = get_dims(&dims).unwrap();
-        for dim in xydims.lines() {  //println!("dim = {}", dim);
-            match pos {
-                0 => {xdim = dim.parse().unwrap(); pos+=1},
-                1 => {ydim = dim.parse().unwrap(); pos+=1},
-                _ => {pos+=1},
-            }
+        for line in get_dims(&dims).unwrap().lines() {
+            xydims.push(line.parse().unwrap()); //println!("line=\n{}",line);
         }
-        println!("!!!!get_dims put into xydims: \n{}", xydims);
     }
 
-
-    // ----- 
+    // build base canvas
     let mut curr_str = String::new();
-    for x in 0..xdim { //build row  //println!("\nx = {}", x);
+    for x in 0..xydims[0] { //build rows
         curr_str = "".to_string();
-        for y in 0..ydim{ // build column // println!("\ny = {}", y);
+        for y in 0..xydims[1] { // build columns
             curr_str = curr_str + ".";
             coord +=1;
         }
-        //use std::fmt::Write;
         writeln!(&mut canvas, "{}", curr_str).unwrap();
         coord+=1;
     }  //println!("xdim = {}", xdim); //println!("ydim = {}", ydim); //println!("pos = {}", pos);
     //println!("\nPrinting CANVAS: \n{}\n", canvas);
+    println!("\tRETURNING canvas from draw_canvas :\n{}", canvas);
     Some(canvas)
 }
 
@@ -112,29 +82,52 @@ pub fn draw_canvas(dims: &[String]) -> Option<String> {
 /// ```
 pub fn add_to_canvas(args: &[String]) -> Option<String> {
     println!("\n\tfunction::add_to_canvas called... \n");
-    println!("Printing passed in args: \n {:?} \n", args);
+    //println!("Printing passed in args: \n {:?} \n", args);
     //get dims
-    let args = args.to_owned();
+    struct Command{
+        sym: String,
+        rs: i32,
+        cs: i32,
+        dir: String,
+        dis: i32,
+    }
+
+    let mut args = args.to_owned();
     let mut dims = String::new();
-    let mut chars = String::new();
+    let mut xydims: Vec<u32> = Vec::new();
+    let mut canvas = String::new();
     let mut position = 0;
     let mut count = 0;
     if !args.is_empty() {
         for arg in &args[..] {
-            for line in arg.lines() {
-                //println!("line = \n{}", line);
-                match count {
-                    0 => {dims = get_dims(&[line.to_string()]).unwrap(); count+=1},
-                    _ => {println!("line{}:{}\n", count, line); count +=1},
+            println!("arg={:?}", arg);
+            for arg in arg.lines(){
+                let line = arg.to_string();
+                println!("line=\n{}", line);
+                if count == 0 {
+                    for dim in get_dims(&[line]).unwrap().lines() {
+                        xydims.push(dim.parse().unwrap());
+                    }
+                    count +=1;
+                } else {  //println!("Need to implement parsing here\n {}", line);
+                    let mut iter = line.split_ascii_whitespace(); // separate args by spaces
+                    let curr_command = Command {
+                        sym: iter.next().unwrap().to_string(),
+                        rs: iter.next().unwrap().to_string().parse().unwrap(),
+                        cs: iter.next().unwrap().to_string().parse().unwrap(),
+                        dir: iter.next().unwrap().to_string(),
+                        dis: iter.next().unwrap().to_string().parse().unwrap(),
+                    };
+                    //println!("{:?}\n", iter.next());
                 }
             }
         }
     } else {
-        chars = "Passed in values empty in function 2".to_string();
+        canvas = "".to_string();
     }
     //println!("dims = \n{}", dims);
-    println!("\tadd funct returning: \n{}", chars);
-    Some(chars)
+    println!("\tRETURNING new canvas from add_to_canvas: \n{}", canvas);
+    Some(canvas)
 }
 
             //for val in &args[..] {
