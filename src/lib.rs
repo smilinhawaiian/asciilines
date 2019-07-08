@@ -26,24 +26,31 @@ pub type AsciiFn = fn(&[String]) -> Option<String>;
 /// assert_eq!(Some("0 0".to_string()), draw_canvas(&[String::from("0 0")]));
 /// ```
 pub fn draw_canvas(nums: &[String]) -> Option<String> {
+    println!("\n\tfunction::draw_canvas called... \n");
     // get the canvas size
-    //let nums = nums.to_owned();
-    //let s: &mut[String] = nums.clone();
-    //let s: &mut[String] = nums.clone();
-    //let s: &mut String = &mut String::from(nums);
+    let mut nums = nums.to_owned();
+    let mut pos = 0;
+    let mut xdim = 0;
+    let mut ydim = 0;
+    let mut v = String::new();
     let count = nums.len();
-    println!("\nnums.len() = {}\n", count);
-    println!("\nPrinting nums: \n{:?}\n", nums);
-    //let mut arithmetic = 0.0;
-    //let mut sum = 0.0;
-    //if count != 0.0 {
-    //    for num in &nums[..] {
-    //        sum += num;
-    //    }
-    //    arithmetic = sum / count;
-    //}
-    //Some(arithmetic)
-    Some("function 1 returning".to_string())
+    let mut line = &nums[0];
+    println!("nums.len() = {}", count);
+    println!("Printing nums: \n{:?}", nums);
+    if count != 0 {
+        for num in &nums[..] {
+            println!("  {}", num);
+            //let s: String = num.to_string(); //works
+            v = num.to_string();
+            pos +=1;
+            println!("pos: {}", pos);
+        }
+    } else {
+        v.insert_str(pos, "CANVAS COULDNT BE DRAWN");
+    }
+
+    println!("\n\tdraw_returning {:?} \n", v);
+    Some(v)
 }
 
 //#[test]
@@ -71,20 +78,25 @@ pub fn draw_canvas(nums: &[String]) -> Option<String> {
 /// assert_eq!(Some("5 6 7".to_string()), funct2(&[String::from("5 6 7")]));
 /// ```
 pub fn funct2(nums: &[String]) -> Option<String> {
+    println!("\n\tfunction::funct2 called... \n");
     //let mut sigma = 0.0;
-    //let mut sqnums = Vec::new();
+    let mut chars = String::new();
     //let xbar = funct1(nums).unwrap() as f64; //no error since mean will be Some
-    //if !nums.is_empty() {
-    //    for val in &nums[..] {
+    let mut position = 0;
+    if !nums.is_empty() {
+        for val in &nums[..] {
+            chars.insert_str(position, val);
+            position += val.len();
     //        let temp = (val - xbar).powf(2.0);
-    //        sqnums.push(temp);
+            //chars.push(val.as_bytes());
     //        sigma = funct1(&sqnums[..]).unwrap().sqrt() as f64;
-    //    }
+        }
     //    Some(sigma)
-    //} else {
-    //    None
-    //}
-    Some("Function 2 returning".to_string())
+    } else {
+        chars = "Passed in values empty in function 2".to_string();
+    }
+    //Some("Function 2 returning".to_string())
+    Some(chars)
 }
 
 //#[test]
@@ -117,6 +129,7 @@ pub fn funct2(nums: &[String]) -> Option<String> {
 /// assert_eq!(Some("".to_string()), funct3(&[String::from("")]));
 /// ```
 pub fn funct3(nums: &[String]) -> Option<String> {
+    println!("\n\tfunction::funct3 called... \n");
     // Make a sorted copy of the input floats.
     let mut nums = nums.to_owned();
     println!("{:?}", nums);
@@ -185,11 +198,8 @@ pub fn funct3(nums: &[String]) -> Option<String> {
 
 
 pub fn funct4(nums: &[String]) -> Option<String> {
-    //let mut norm = 0.0;
-    //let mut sum = 0.0;
-    //let s: &mut String = &mut *(*nums.clone());
+    println!("\n\tfunction::funct4 called... \n");
     let mut nums = nums.to_owned();
-    //let s: &mut String = &mut String::from(nums);
     if !nums.is_empty() {
     //    for val in &nums[..] {
     //        sum += val.powf(2.0);

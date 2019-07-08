@@ -40,7 +40,6 @@ fn main() {
 
     let argit = argdescs.iter();  //this worked...
 
-
     // create outfile to check
     // start with similar name
     let mut outfile_name = filename.to_string(); //println!("\noutfile_name: {:?}\n", outfile_name);
@@ -58,10 +57,10 @@ fn main() {
         Ok(outfile) => outfile,
     };
     //now write to file below
-    match outfile.write_all("starting here...".as_bytes()) {
-        Err(why) => panic!("couldn't write to {}: {}", display, why.description()),
-        Ok(_) => println!("successful write to {}", display),
-    }
+    //match outfile.write_all("starting here...".as_bytes()) {
+    //    Err(why) => panic!("couldn't write to {}: {}", display, why.description()),
+    //    Ok(_) => println!("successful write to {}", display),
+    //}
 
     // convert file into String for slicing
     let contents = fs::read_to_string(filename)
@@ -76,8 +75,13 @@ fn main() {
         println!("line {}: {}", count, line);
         let nline: &[String] = &[line.to_string()];
         if count == 0 { // canvas parameters
-            println!("canvas parameters here \n");
-            asciilines::draw_canvas(nline);
+            println!("canvas parameters here");
+            let canvas: &mut String = &mut asciilines::draw_canvas(nline).unwrap();
+            //println!("\ncanvas= {:?}\n", canvas);
+            match outfile.write_all(&canvas.as_bytes()) {
+                Err(why) => panic!("couldn't write to {}: {}", display, why.description()),
+                Ok(_) => println!("successful write to {}\n", display),
+            } 
             //let mut rendering = argit.find(|(a, _)| a == nline);
         } else {    // render command
             println!("rendering to be done here \n");
