@@ -1,13 +1,8 @@
-//--------------------------------------------------------
-// ALL THESE THINGS WERE IN THE STATS/SRC/LIB.RS FILE
 // Copyright © 2019 Sharice Mayer
 // [This program is licensed under the "MIT License"]
 // Please see the file LICENSE in the source
 // distribution of this software for license terms.
-//
-// THIS IS A STUB TO START THE ASCII PROGRAM WITH
 
-///! CURRENTLY STUBBED FOR STRUCTURAL INFORMATION ONLY
 ///! Functions to help render a .tvg file 
 ///! on standard output
 
@@ -15,7 +10,8 @@
 /// is ill-defined, `None` will be returned.
 pub type AsciiFn = fn(&[String]) -> Option<String>;
 
-/// Gets the canvas size from the first line of the tvg file.
+/// Draw canvas from tvg file input.
+/// Canvas size input from the first line of the tvg file.
 /// This line contains the integer dimensions: 
 /// rows columns
 ///
@@ -23,15 +19,21 @@ pub type AsciiFn = fn(&[String]) -> Option<String>;
 ///
 /// ```
 /// # use asciilines::*;
-/// assert_eq!(Some("5 6".to_string()), funct1(&[String::from("5 6")]));
+/// assert_eq!(Some("5 6".to_string()), draw_canvas(&[String::from("5 6")]));
 /// ```
 /// ```
 /// # use asciilines::*;
-/// assert_eq!(Some("0 0".to_string()), funct1(&[String::from("0 0")]));
+/// assert_eq!(Some("0 0".to_string()), draw_canvas(&[String::from("0 0")]));
 /// ```
-pub fn funct1(nums: &[String]) -> Option<String> {
+pub fn draw_canvas(nums: &[String]) -> Option<String> {
     // get the canvas size
-    //let count = nums.len() as f64;
+    //let nums = nums.to_owned();
+    //let s: &mut[String] = nums.clone();
+    //let s: &mut[String] = nums.clone();
+    //let s: &mut String = &mut String::from(nums);
+    let count = nums.len();
+    println!("\nnums.len() = {}\n", count);
+    println!("\nPrinting nums: \n{:?}\n", nums);
     //let mut arithmetic = 0.0;
     //let mut sum = 0.0;
     //if count != 0.0 {
