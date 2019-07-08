@@ -23,11 +23,11 @@ pub type AsciiFn = fn(&[String]) -> Option<String>;
 ///
 /// ```
 /// # use asciilines::*;
-/// assert_eq!(Some("5 6".to_string()), funct1(&[5 6]));
+/// assert_eq!(Some("5 6".to_string()), funct1(&[String::from("5 6")]));
 /// ```
 /// ```
 /// # use asciilines::*;
-/// assert_eq!(Some("0 0".to_string()), funct1(&[0 0]));
+/// assert_eq!(Some("0 0".to_string()), funct1(&[String::from("0 0")]));
 /// ```
 pub fn funct1(nums: &[String]) -> Option<String> {
     // get the canvas size
@@ -54,6 +54,7 @@ pub fn funct1(nums: &[String]) -> Option<String> {
 //    assert_eq!(Some(25.0), funct1(&[25.0]));
 //}
 
+// assert_eq!(None, funct2(&[]));
 /// Population standard deviation of input values. The
 /// standard deviation of an empty list is undefined.
 ///
@@ -61,11 +62,11 @@ pub fn funct1(nums: &[String]) -> Option<String> {
 ///
 /// ```
 /// # use asciilines::*;
-/// assert_eq!(None, funct2(&[]));
+/// assert_eq!(Some("5 6".to_string()), funct2(&[String::from("5 6")])); 
 /// ```
 /// ```
 /// # use asciilines::*;
-/// assert_eq!(Some(0.0), funct2(&[1.0, 1.0]));
+/// assert_eq!(Some("5 6 7".to_string()), funct2(&[String::from("5 6 7")]));
 /// ```
 pub fn funct2(nums: &[String]) -> Option<String> {
     //let mut sigma = 0.0;
@@ -97,6 +98,8 @@ pub fn funct2(nums: &[String]) -> Option<String> {
 //    assert_eq!(Some(0.0), funct2(&[25.0]));
 //}
 
+// assert_eq!(None, funct3(&[]));
+// assert_eq!(Some(0.0), funct3(&[0.0, 0.5, -1.0, 1.0]));
 /// Median value of input values, taking the value closer
 /// to the beginning to break ties. The median
 /// of an empty list is undefined.
@@ -105,11 +108,11 @@ pub fn funct2(nums: &[String]) -> Option<String> {
 ///
 /// ```
 /// # use asciilines::*;
-/// assert_eq!(None, funct3(&[]));
+/// assert_eq!(Some("5 6".to_string()), funct3(&[String::from("5 6")]));
 /// ```
 /// ```
 /// # use asciilines::*;
-/// assert_eq!(Some(0.0), funct3(&[0.0, 0.5, -1.0, 1.0]));
+/// assert_eq!(Some("".to_string()), funct3(&[String::from("")]));
 /// ```
 pub fn funct3(nums: &[String]) -> Option<String> {
     // Make a sorted copy of the input floats.
@@ -138,6 +141,8 @@ pub fn funct3(nums: &[String]) -> Option<String> {
 //    assert_eq!(Some(25.0), funct3(&[25.0]));
 //}
 
+// assert_eq!(Some(0.0), funct4(&[]));
+// assert_eq!(Some(5.0), funct4(&[-3.0, 4.0]));
 /// L2 norm (Euclidean norm) of input values. The L2
 /// norm of an empty list is 0.0.
 ///
@@ -145,11 +150,11 @@ pub fn funct3(nums: &[String]) -> Option<String> {
 ///
 /// ```
 /// # use asciilines::*;
-/// assert_eq!(Some(0.0), funct4(&[]));
+/// assert_eq!(Some("5 6".to_string()), funct4(&[String::from("5 6")]));
 /// ```
 /// ```
 /// # use asciilines::*;
-/// assert_eq!(Some(5.0), funct4(&[-3.0, 4.0]));
+/// assert_eq!(Some("".to_string()), funct4(&[String::from("")]));
 /// ```
 //pub fn funct4(nums: &[f64]) -> Option<f64> {
 //    let mut norm = 0.0;
@@ -180,17 +185,22 @@ pub fn funct3(nums: &[String]) -> Option<String> {
 pub fn funct4(nums: &[String]) -> Option<String> {
     //let mut norm = 0.0;
     //let mut sum = 0.0;
+    //let s: &mut String = &mut *(*nums.clone());
+    let mut nums = nums.to_owned();
+    //let s: &mut String = &mut String::from(nums);
     if !nums.is_empty() {
     //    for val in &nums[..] {
     //        sum += val.powf(2.0);
     //    }
     //    norm = sum.sqrt();
         println!("num is not empty: {:?}", nums);
-        //Some("nums is empty".to_string())
-    };
+        //Some(nums)
+        Some("nums is not empty".to_string())
+    } else {
     //}
     //Some(norm)
-    Some("Function 4 returning".to_string())
+        Some("Function 4 returning".to_string())
+    }
 }
 
 //--Add tests here
