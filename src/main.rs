@@ -6,8 +6,11 @@
 
 use std::process::exit;
 use std::fs;
+use std::fs::File;
+use std::io::Write;
 use std::io::BufRead;
 use std::path::Path;
+use std::error::Error;
 
 ///! Accept a single .tvg file command line argument and 
 ///! render the file as ASCII on standard output
@@ -37,35 +40,28 @@ fn main() {
 
     let argit = argdescs.iter();  //this worked...
 
-    //for a_pair in argdescs.iter() { //this loop also valid
-    //    println!("\na_pair loop running..\n");
-    //}
 
     // create outfile to check
-    let mut outfile_name = filename.to_string();
-    let mut out_name = filename.to_string();
-    println!("\noutfile_name: {:?}\n", outfile_name);
-    let mut outfile_len = filename.len();
-    println!("\noutfile_len: {:?}\n", outfile_len);
-    outfile_len -= 3;
-    println!("\noutfile_len: {:?}\n", outfile_len);
-    //let &mut ext = &mut outfile_name[outfile_len..];
-    //let mut tvg = false;
+    // start with similar name
+    let mut outfile_name = filename.to_string(); //println!("\noutfile_name: {:?}\n", outfile_name);
+    let mut outfile_len = filename.len() - 3;  //println!("\noutfile_len: {:?}\n", outfile_len); 
     let ext: &mut String = &mut outfile_name[outfile_len..].to_string();
-    println!("\next: {:?}\n", ext);
     if ext == "tvg" {
-        out_name = outfile_name[0..(outfile_len-1)].to_string();
-        println!("\nout_name: {:?}\n", out_name);
+        outfile_name = outfile_name[0..(outfile_len-1)].to_string() + "_my.out";  // println!("\nfinal outfile name: {:?}\n", outfile_name);  
     }
-    //if &mut outfile_name[outfile_len..] == "tvg" {
-        //println!("ext = TVG\n");
-    //    tvg = true;
-    //}
-    //let ext = &outfile_name[outfile_len..];
-    //if ext == "tvg" { // change outfile name
-        //println!("ext = {:?}\n", ext);
-    //}
-    //outfile_name = outfile_name[
+    // create file path
+    let path = Path::new(&outfile_name);
+    let display = path.display();
+    // open a file in write-only mode; returns io::Result<File>
+    let mut outfile = match File::create(&path) {
+        Err(why) => panic!("couldn't create {}: {}", display, why.description()),
+        Ok(outfile) => outfile,
+    };
+    //now write to file below
+    match outfile.write_all("starting here...".as_bytes()) {
+        Err(why) => panic!("couldn't write to {}: {}", display, why.description()),
+        Ok(_) => println!("successful write to {}", display),
+    }
 
     // convert file into String for slicing
     let contents = fs::read_to_string(filename)
