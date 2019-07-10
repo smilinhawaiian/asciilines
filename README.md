@@ -94,7 +94,7 @@ Note: The "empty" lines in the example are intentional program output to help vi
     $ 
 
 
-*need to fix to add my copy*
+*need to fix to add my copy*  
 To run the python version instead:  
 
 python3 asciilines.py tests/test1.tvg
