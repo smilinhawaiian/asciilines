@@ -29,7 +29,7 @@ pub struct Command {
         pub dis: i32,
 }
 
-/// Draw canvas from tvg file input.
+/// Draw base canvas from tvg file input.
 /// Canvas size input from the first line of the tvg file.
 /// This line contains the integer dimensions: 
 /// rows columns
@@ -267,42 +267,33 @@ pub fn get_dims(dims: &[String]) -> Option<String> { //--println!("\n\tfunction:
 
 // assert_eq!(Some(0.0), funct4(&[]));
 // assert_eq!(Some(5.0), funct4(&[-3.0, 4.0]));
-/// L2 norm (Euclidean norm) of input values. The L2
-/// norm of an empty list is 0.0.
+/// This is an extra function stub only.
+/// Plans are to implement a helper function to break down
+/// the "add_to_canvas" function
 ///
 /// # Examples:
 ///
 /// ```
 /// # use asciilines::*;
-/// assert_eq!(Some("5 6".to_string()), funct4(&[String::from("5 6")]));
+/// assert_eq!(Some("string output".to_string()), funct4(&[String::from("string input")]));
 /// ```
 /// ```
 /// # use asciilines::*;
 /// assert_eq!(Some("".to_string()), funct4(&[String::from("")]));
 /// ```
-//pub fn funct4(nums: &[f64]) -> Option<f64> {
-//    let mut norm = 0.0;
-//    let mut sum = 0.0;
-//    if !nums.is_empty() {
-//        for val in &nums[..] {
-//            sum += val.powf(2.0);
-//        }
-//        norm = sum.sqrt();
-//    }
-//    Some(norm)
-//}
 
 //#[test]
-//fn test_funct4_311() {
+//fn test_funct4_1() {
 //    assert_eq!(
-//        311.0,
-//        funct4(&[75.5, 100.5, 95.5, 265.5, -37.0]).unwrap().round()
+//        "....
+//        .###
+//        ....
+//        ....",
+//        funct4(&[
+//        "4 4
+//        # 1 1 h 5
+//        ".to_string()]).unwrap()
 //    );
-//}
-
-//#[test]
-//fn test_funct4_single() {
-//    assert_eq!(Some(25.0), funct4(&[25.0]));
 //}
 
 
