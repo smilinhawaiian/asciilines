@@ -17,7 +17,7 @@ use std::error::Error;
 
 /// Report proper usage and exit.
 fn usage() -> ! {
-    eprintln!("asciilines: usage: asciilines [--canvas|--add_to_canvas|--funct3|--funct4]");
+    eprintln!("asciilines: usage: asciilines [--draw_canvas|--add_to_canvas|--get_dims|--funct4]");
     exit(1);
 }
 
@@ -30,9 +30,9 @@ fn main() {
     }
     //println!("\nPrinting args: \n{:?}\n", args); // for testing
     let filename = &args[1];
-    println!("\nThe filename that was read in is:\n{}", filename); // for testing
+    println!("\n  The filename that was read in is:\n  {}", filename); // for testing
     let argdescs: &[(&str, asciilines::AsciiFn)] = &[
-        ("--canvas", asciilines::draw_canvas),
+        ("--draw_canvas", asciilines::draw_canvas),
         ("--add_to_canvas", asciilines::add_to_canvas),
         ("--get_dims", asciilines::get_dims),
         ("--funct4", asciilines::funct4),
@@ -48,6 +48,7 @@ fn main() {
     if ext == "tvg" {
         outfile_name = outfile_name[0..(outfile_len-1)].to_string() + "_my.out";  // println!("\nfinal outfile name: {:?}\n", outfile_name);  
     }
+
     // create file path
     let path = Path::new(&outfile_name);
     let display = path.display();
@@ -56,53 +57,31 @@ fn main() {
         Err(why) => panic!("couldn't create {}: {}", display, why.description()),
         Ok(outfile) => outfile,
     };
-    //now write to file below
-    //match outfile.write_all("starting here...".as_bytes()) {
-    //    Err(why) => panic!("couldn't write to {}: {}", display, why.description()),
-    //    Ok(_) => println!("successful write to {}", display),
-    //}
 
     // convert file into String for slicing
     let contents = fs::read_to_string(filename)
         .expect("Something went wrong reading the file");
 
-    println!("\nContents of file read in:\n{}\n", contents); // for testing
+    println!("\nContents of file:\n{}\n", contents); // for testing
 
     // iterate over each slice of the file to pass into functions
-    // to do stuff
-    let mut dims = String::new();
     let mut canvas = String::new();
     let mut count = 0;
-    for line in contents.lines() {
-        println!("line {}: \n{}", count, line);
-        let nline: &[String] = &[line.to_string()];
-        if count == 0 { // canvas parameters // println!("canvas parameters here");
-            dims = line.to_string(); // println!("dims: {}", dims);
-            let dims = &dims;
-            let canvas: &mut String = &mut asciilines::draw_canvas(nline).unwrap();
-            //println!("\ncanvas= {:?}\n", canvas);
-            match outfile.write_all(&canvas.as_bytes()) {
-                Err(why) => panic!("couldn't write to {}: {}", display, why.description()),
-                Ok(_) => println!(""), // println!("successful write to {}\n", display),
-            } 
-            println!("\nPRINTING RETURNED CANVAS:\n");
-            let str_canvas = &canvas[..];
-            //for cline in canvas.lines() {
-            for cline in str_canvas.lines() {
-                println!("{}", cline)
-            }
-        } else {    // render command
-            //println!("rendering to be done here \n");
-            //println!("\nnline= {:?}\n", nline);
-            let mut mline = String::new();
-            use std::fmt::Write;
-            writeln!(&mut mline, "{}", dims).unwrap();
-            mline = mline + line;
-            let canvas: &mut String = &mut asciilines::add_to_canvas(&[mline.to_string()]).unwrap();
-            //println!("\ncanvas= {:?}\n", canvas);
-        }
-        count+=1;
-        println!("\n");
+    let canvas: &mut String = &mut asciilines::add_to_canvas(&[contents.to_string()]).unwrap();
+    //println!("\ncanvas= {:?}\n", canvas);
+    //--println!("\nTesting backtrace... after add_to_canvas call\n");
+    // now write to file!
+    match outfile.write_all(&canvas.as_bytes()) {
+        Err(why) => panic!("couldn't write to {}: {}", display, why.description()),
+        Ok(_) => println!("successful write to {}\n", display),
+        //Ok(_) => {}, // println!("successful write to {}\n", display),
+    } 
+
+    // println!("\n  PRINTING RETURNED BASE CANVAS:");
+    println!("Printing {} contents: \n", display);
+    let str_canvas = &canvas[..];
+    for cline in str_canvas.lines() {
+        println!("  {}", cline)
     }
 
 
@@ -149,7 +128,7 @@ fn main() {
     //    })
     //    .collect();
 
-    println!("\nRendering the input: \n"); // for testing
+    //println!("\nRendering the input: \n"); // for testing
 
     // Run the tvg, show the rendering if any.
     //if let Some(result) = rendering(&tvg_data) {
