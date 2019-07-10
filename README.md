@@ -22,13 +22,20 @@ The rest of the file is rendering commands, one per line.
 
 A rendering command is a line containing:
 
-A character to render with
+A character to render onto the canvas
+    -Must be an ascii character value
 A row position to start at (0-based)
+    -Must be a single digit(<10)
 A column position to start at (0-based)
-Either h for a horizontal line or v for a vertical line. 
-Horizontal lines go to the right from the starting coordinate; vertical lines go down.
-A length for the rendered line (must be greater than 0)
-The elements of the command should be separated by a single space.
+    -Must be a single digit(<10)
+A letter indicating direction
+    -Either 'h' for a horizontal line or 'v' for a vertical line
+    -Horizontal lines go to the right from the starting coordinate
+    -Vertical lines go down from the starting coordinate
+A length for the rendered line
+    -Must be greater than 0
+
+The elements of the rendering command should be separated by a single space.
 
 The character positions that are part of the rendering command's rendered line should be filled with the rendering character. 
 It is legal for the line to extend outside the canvas. 
@@ -37,15 +44,21 @@ There is no wraparound: only points inside the canvas should be rendered, others
 A rendering output is produced by executing each of the rendering commands on the canvas. 
 For example, a TVG file containing:
 
-     3 4
-     * 1 -1 h 5
-     # -1 1 v 5
+     6 7
+     * 4 -1 h 7
+     x 0 -1 v 6
+     # -1 3 v 7
+     $ -1 0 h 8
+     ? 0 4 v 4
 
 should render as:
 
-    .#..
-    *#**
-    .#..
+    $$$$?$$
+    x..#?..
+    x..#?..
+    x..#?..
+    x**#.**
+    x..#...
 
 
 ## Build and Run
@@ -58,18 +71,28 @@ cargo run tests/test1.tvg
 
 
 Here is an example session. The lines beginning with $ were typed by me: the other lines are program output.
+Note: The "empty" lines in the example are intentional program output to help visibility.
 
-    $ cat tests/test1.tvg 
-    3 4
-    * 1 -1 h 5
-    # -1 1 v 5
     $ cargo run tests/test1.tvg
-    .#..
-    *#**
-    .#..
+     
+    The filename read in was:
+      tests/test1.tvg
+      
+    Contents of file:
+      3 4
+      * 1 -1 h 5
+      # -1 1 v 5
+      
+    Successful write!
+    Contents of tests/test1.out: 
+      .#..
+      *#**
+      .#..
+     
     $ 
 
 
+**need to fix to add my copy
 To run the python version instead:
 
 python3 asciilines.py tests/test1.tvg
@@ -102,17 +125,7 @@ software for license terms.
 
 ## Acknowledgments
 Thanks to professor Bart Massey for much of the underlying README information and project guidance.
-Thanks to classmate Eliot Woodrich for letting me borrow his python as an example in another lamguage.
-
-
-# TODO!-------------------------------------
-
-Create two tests of your own and verify that they output correctly.
-
-Add a README.md in Markdown format to your project.
-Add and commit your README to git.
-
-Push your Git repository upstream.
+Thanks to my classmates for their support as well.
 
 
 
