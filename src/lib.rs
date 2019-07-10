@@ -4,7 +4,7 @@
 // distribution of this software for license terms.
 
 use std::fmt::Write;
-use std::fmt::Debug;
+//use std::fmt::Debug;
 
 ///! Functions to help render a .tvg file 
 ///! on standard output
@@ -31,71 +31,65 @@ pub struct Command {
 
 /// Draw base canvas from tvg file input.
 /// Canvas size input from the first line of the tvg file.
-/// This line contains the integer dimensions: 
+/// This line contains the canvas dimensions: 
 /// rows columns
 ///
 /// # Examples:
 ///
 /// ```
 /// # use asciilines::*;
-/// assert_eq!(Some("5 6".to_string()), draw_canvas(&[String::from("5 6")]));
+/// assert_eq!(Some(".....\n.....\n.....\n".to_string()), draw_canvas(&[String::from("3 5")]));
 /// ```
 /// ```
 /// # use asciilines::*;
-/// assert_eq!(Some("0 0".to_string()), draw_canvas(&[String::from("0 0")]));
+/// assert_eq!(Some("".to_string()), draw_canvas(&[String::from("0 0")]));
 /// ```
 pub fn draw_canvas(dims: &[String]) -> Option<String> {
-    ////println!("\n\tfunction::draw_canvas called... ");
-    // get the canvas size
-    //--println!("dims= {:?}",dims);
+    // declare variables for storing canvas and dimensions
     let mut xydims: Vec<u32> = Vec::new();
     let mut canvas = String::new();
-    // get dimentions for canvas
+    
+    // get dimensions for canvas
     if dims.len() != 0 {
-        for line in get_dims(&dims).unwrap().lines() {  //--println!("printing line.. {:?}", line);
-            xydims.push(line.parse().unwrap()); //println!("line=\n{}",line);
+        for line in get_dims(&dims).unwrap().lines() {
+            xydims.push(line.parse().unwrap());
+        }
+        // build base canvas
+        for _x in 0..xydims[0] {  // build rows
+            let mut curr_str = "".to_string();
+            for _y in 0..xydims[1] {  // build columns
+                curr_str = curr_str + ".";
+            }
+            writeln!(&mut canvas, "{}", curr_str).unwrap();
         }
     }
-    // build base canvas
-    let mut curr_str = String::new(); //--println!("xydims = {:?}", xydims);
-    for x in 0..xydims[0] { //build rows
-        curr_str = "".to_string();
-        for y in 0..xydims[1] { // build columns
-            curr_str = curr_str + ".";
-        }
-        writeln!(&mut canvas, "{}", curr_str).unwrap();
-    }  //println!("xdim = {}", xdim); //println!("ydim = {}", ydim); //println!("pos = {}", pos);
-    //println!("\nPrinting CANVAS: \n{}\n", canvas);
-    ////println!("\n\tReturning from draw_canvas()");
     Some(canvas)
 }
 
 //#[test]
-//fn test_funct1_100() {
-//    assert_eq!(Some(100.0), funct1(&[75.5, 100.5, 95.5, 265.5, -37.0]));
+//fn test_draw_canvas_01() {
+//    assert_eq!(Some(""), draw_canvas(&[""]));
 //}
 
-//#[test]
-//fn test_funct1_single() {
-//    assert_eq!(Some(25.0), funct1(&[25.0]));
-//}
 
-// assert_eq!(None, funct2(&[]));
-/// Adds characters to canvas as given by tvg file.
-/// char rowstart colstart direction length
+/// Builds canvas from tvg file rendering commands  
+/// 1. Gets canvas dimensions from first line  
+/// 2. Parses rendering commands into a struct for each successive line  
+/// 3. Adds characters to canvas as given by each command  
+/// num_rows num_cols  
+/// char rowstart colstart direction length  
 ///
-/// # Examples:
+/// # Examples:  
 ///
 /// ```
-/// # use asciilines::*;
-/// assert_eq!(Some("* 5 6 h 2".to_string()), add_to_canvas(&[String::from("* 5 6 h 2")])); 
+/// # use asciilines::*;  
+/// assert_eq!(Some(".**.\n....\n....\n....\n".to_string()), add_to_canvas(&[String::from("4 4\n* 0 1 h 2")]));  
 /// ```
 /// ```
-/// # use asciilines::*;
-/// assert_eq!(Some("# 5 6 v 1".to_string()), add_to_canvas(&[String::from("# 5 6 v 1")]));
+/// # use asciilines::*;  
+/// assert_eq!(Some("#.....\n.#...\n.#...\n".to_string()), add_to_canvas(&[String::from("3 5\n# 1 1 v 4")]));  
 /// ```
 pub fn add_to_canvas(args: &[String]) -> Option<String> {
-    //println!("\nTesting backtrace...\n");
     ////println!("\n\tfunction::add_to_canvas called... ");
     //println!("Printing passed in args: \n {:?} \n", args);
     //get dims
@@ -105,24 +99,18 @@ pub fn add_to_canvas(args: &[String]) -> Option<String> {
     let mut canvas = String::new();
     let mut count = 0;
     if !args.is_empty() {
-        for slice in &args[..] {
-            //println!("arg={:?}", arg);
+        for slice in &args[..] { //println!("slice={:?}", slice);
             for arg in slice.lines(){
                 let line = arg.to_string(); //println!("line=\n{}", line);
                 if count == 0 {  //--println!("if count == 0...\n");
                     // build_base_canvas
                     dims = line.to_string();
-                    //--println!("dims= {}", dims);
-                    //println!("Testing backtrace...");
                     canvas = draw_canvas(&[dims]).unwrap(); //println!("base returned =\n{}", canvas);
-                    //--println!("Testing backtrace...");
                     for dim in get_dims(&[line]).unwrap().lines() {
                         xydims.push(dim.parse().unwrap());
                     }
                     count +=1;
-                } else {  //println!("Need to implement parsing here\n {}", line);
-                    //--println!("count > 0 {}...\n", count);
-                    //println!("...\n");
+                } else {
                     let mut new_canvas = String::new();
                     let mut position = 0;
                     let mut iter = line.split_ascii_whitespace(); // separate args by spaces
@@ -136,28 +124,27 @@ pub fn add_to_canvas(args: &[String]) -> Option<String> {
                     //get canvas info
                     //println!("\n\tcurr_command:\n\t{:?}", curr_command);
                     // check for valid indices
-                    //--println!("command created...\n");
+                    // rs==ys ; xs==cs
                     let min = 0;
                     let cmax = if xydims[1]-1 < 0 { min } else { xydims[1]-1 };// check #col ==> x dimension
-                    let cs = if curr_command.cs > cmax { cmax } else if curr_command.cs < 0 { min } else { curr_command.cs };
+                    let xs = if curr_command.cs > cmax { cmax } else if curr_command.cs < 0 { min } else { curr_command.cs };
                     let rmax = if xydims[0]-1 < 0 { min } else { xydims[0]-1 };// check #row ==> y dimension
-                    let rs = if curr_command.rs > rmax { rmax } else if curr_command.rs < 0 { min } else { curr_command.rs };
+                    let ys = if curr_command.rs > rmax { rmax } else if curr_command.rs < 0 { min } else { curr_command.rs };
                     let idist = curr_command.dis;
                     let isym = curr_command.sym;
-                    ////println!("\tcolmax={}, colstart={}, rowmax={}, rowstart={}, dist={}\n", cmax, cs, rmax, rs, idist);
+                    //println!("\n\tcolmax={}, colstart={}, rowmax={}, rowstart={}, dist={}\n", cmax, xs, rmax, ys, idist);
                     if curr_command.dir == "h" { //get direction  //println!("\thorizontal movement"); // horizontal calc
-                        let hdist = if cmax-cs+1 > idist { idist } else { cmax+1-cs };
-                        ////println!("\thorizontal path length from ({}-{} , {}) = {}\n", cs, cmax, rs, hdist);
-                        //canvas[xind][yind] == curr_command.sym for each in path
+                        let hdist = if cmax-xs+1 > idist { idist } else { cmax+1-xs }; //xs == cs
+                        //println!("\thorizontal path length from ({}-{} , {}) = {}\n", xs, cmax, ys, hdist);
+                        let pmax = if cmax+1 > hdist {hdist-1} else {cmax};
                         for row in 0..xydims[0] {  //render canvas rs==row to care about
                             let mut curr_str = String::new();
                             curr_str = "".to_string();
                             for col in 0..xydims[1] {
                                 let element = canvas.as_bytes()[position] as char;
-                                let element = element.to_string();
-                                ////println!("current element: {} ", element);
-                                let curr_char: &String  = if row==rs && col >= cs && col <=cmax { &isym } else { &element };
-                                ////println!("current_char = {}\n", curr_char);
+                                let element = element.to_string();  //println!("current element: {} ", element);
+                                let curr_char: &String  = if row==ys && col >= xs && col <=pmax && hdist > 0 { &isym } else { &element };
+                                //println!("current_char = {}\n", curr_char);
                                 curr_str = curr_str + curr_char;
                                 position +=1;
                             }
@@ -165,16 +152,17 @@ pub fn add_to_canvas(args: &[String]) -> Option<String> {
                             position+=1;
                         }
                     } else {  //println!("\tvertical movement"); // vertical
-                        let vdist = if rmax-rs+1 > idist { idist } else { rmax+1-rs };
-                        ////println!("vertical path length from ({} , {}-{}) = {}\n", cs, rs, rmax, vdist);
+                        let vdist = if rmax-ys+1 > idist { idist } else { rmax+1-ys };
+                        //println!("vertical path length from ({} , {}-{}) = {}\n", xs, ys, rmax, vdist);
+                        let pmax = if rmax+1 > vdist {vdist-1} else {rmax};
                         for row in 0..xydims[0] {  //render canvas cs==col to care about
                             let mut curr_str = String::new();
                             curr_str = "".to_string();
-                            for col in 0..xydims[1] {
-                                let element: String = (canvas.as_bytes()[position] as char).to_string();
-                                ////println!("current element: {}", element);
-                                let curr_char: &String  = if col==cs && row >= rs && row <= rmax { &isym } else { &element };
-                                ////println!("current_char = {}", curr_char);
+                            for col in 0..xydims[1] {  //let element: String = (canvas.as_bytes()[position] as char).to_string();
+                                let element = canvas.as_bytes()[position] as char;
+                                let element = element.to_string();  // println!("current element: {}", element);
+                                let curr_char: &String  = if ((col==xs) && (row >= ys) && (row <= pmax) && (count < vdist)) { &isym } else { &element };
+                                //println!("current_char = {}", curr_char);
                                 curr_str = curr_str + curr_char;
                                 position +=1;
                             }
@@ -183,38 +171,25 @@ pub fn add_to_canvas(args: &[String]) -> Option<String> {
                         }
                     } // end if curr_command.dir == h or v
                     canvas = new_canvas;
-                    //println!("\nprinting current canvas: \n{}", canvas);
                 }  // end if count == 0 
-                //println!("after if count, canvas: \n{}", canvas);
             }  // end for arg in slice.lines() 
-            ////println!("after for arg in slice.lines(), canvas: \n{}", canvas);
         }  // end for slice in &args[..] 
     } else {
         canvas = "".to_string();
     }  // end if!args.is_empty()
-    //--println!("after for arg in slice.lines(), canvas: \n{}", canvas);
-    //println!("dims = \n{}", dims);
     ////println!("\tRETURNING new canvas from add_to_canvas: \n{}", canvas);
-    ////println!("\n\tReturning from add_to_canvas() ");
     Some(canvas)
 }
-
-            
+         
 //#[test]
-//fn test_funct2_97() {
+//fn test_add_to_canvas_01() {
 //    assert_eq!(
 //        97.0,
 //        funct2(&[75.5, 100.5, 95.5, 265.5, -37.0]).unwrap().round()
 //    );
 //}
 
-//#[test]
-//fn test_funct2_single() {
-//    assert_eq!(Some(0.0), funct2(&[25.0]));
-//}
 
-// assert_eq!(None, funct3(&[]));
-// assert_eq!(Some(0.0), funct3(&[0.0, 0.5, -1.0, 1.0]));
 /// Parse and return the canvas dimensions specified by the tvg file
 /// rows cols
 ///
@@ -256,68 +231,8 @@ pub fn get_dims(dims: &[String]) -> Option<String> { //--println!("\n\tfunction:
 }
 
 //#[test]
-//fn test_funct3_95() {
-//    assert_eq!(Some(95.5), funct3(&[75.5, 100.5, 95.5, 265.5, -37.0]));
-//}
-
-//#[test]
-//fn test_funct3_single() {
-//    assert_eq!(Some(25.0), funct3(&[25.0]));
-//}
-
-// assert_eq!(Some(0.0), funct4(&[]));
-// assert_eq!(Some(5.0), funct4(&[-3.0, 4.0]));
-/// This is an extra function stub only.
-/// Plans are to implement a helper function to break down
-/// the "add_to_canvas" function
-///
-/// # Examples:
-///
-/// ```
-/// # use asciilines::*;
-/// assert_eq!(Some("string output".to_string()), funct4(&[String::from("string input")]));
-/// ```
-/// ```
-/// # use asciilines::*;
-/// assert_eq!(Some("".to_string()), funct4(&[String::from("")]));
-/// ```
-
-//#[test]
-//fn test_funct4_1() {
-//    assert_eq!(
-//        "....
-//        .###
-//        ....
-//        ....",
-//        funct4(&[
-//        "4 4
-//        # 1 1 h 5
-//        ".to_string()]).unwrap()
-//    );
+//fn test_get_dims_01() {
+//    assert_eq!(Some("4 9".to_string()), funct3(&["4 9".to_string()]));
 //}
 
 
-pub fn funct4(nums: &[String]) -> Option<String> {
-    ////println!("\n\tfunction::funct4 called... ");
-    let mut ret = String::new();
-    let mut nums = nums.to_owned();
-    if !nums.is_empty() {
-    //    for val in &nums[..] {
-    //        sum += val.powf(2.0);
-    //    }
-    //    norm = sum.sqrt();
-        println!("num is not empty: {:?}", nums);
-        //Some(nums)
-        //Some("nums is not empty".to_string())
-        ret = "nums_is_not_empty".to_string();
-    } else {
-    //}
-    //Some(norm)
-        //Some("Function 4 returning".to_string())
-        ret = "empty".to_string();
-    }
-    ////println!("\n\tReturning from funct4()");
-    Some(ret)
-}
-
-//--Add tests here
