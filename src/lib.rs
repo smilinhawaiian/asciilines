@@ -87,7 +87,7 @@ pub fn draw_canvas(dims: &[String]) -> Option<String> {
 /// ```
 /// ```
 /// # use asciilines::*;  
-/// assert_eq!(Some("#.....\n.#...\n.#...\n".to_string()), add_to_canvas(&[String::from("3 5\n# 1 1 v 4")]));  
+/// assert_eq!(Some("......\n.#...\n.#...\n".to_string()), add_to_canvas(&[String::from("3 5\n# 1 1 v 4")]));  
 /// ```
 pub fn add_to_canvas(args: &[String]) -> Option<String> {
     ////println!("\n\tfunction::add_to_canvas called... ");
